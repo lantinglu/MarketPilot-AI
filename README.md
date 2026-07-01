@@ -10,6 +10,20 @@ An AI-powered multi-agent system that helps cross-border sellers evaluate whethe
 
 ## 在线演示 / Live Demo
 
+Live demo: **Coming soon after Streamlit Cloud deployment**
+
+部署完成后可将上面替换为：
+
+```markdown
+Live demo: [Market Entry Agent](https://your-app-name.streamlit.app)
+```
+
+### Demo Preview / 演示截图
+
+![Market Entry Agent Demo](demo.png)
+
+### Local Demo / 本地运行
+
 本地运行 Streamlit：
 
 ```bash
@@ -30,6 +44,41 @@ Demo 网站支持：
 - 平台推荐
 - 中英双语市场进入报告生成
 - Markdown 报告下载
+
+### Deploy as a Public Live Demo / 部署为公开演示网站
+
+推荐使用 **Streamlit Community Cloud** 部署本项目。部署后，你会得到一个类似下面这样的公开链接：
+
+```text
+https://your-app-name.streamlit.app
+```
+
+部署步骤：
+
+1. 将项目 push 到 GitHub。
+2. 打开 [Streamlit Community Cloud](https://share.streamlit.io/)。
+3. 使用 GitHub 登录。
+4. 点击 `New app`。
+5. 选择该项目仓库。
+6. `Main file path` 填写：
+
+```text
+app.py
+```
+
+7. 点击 `Deploy`。
+8. 复制生成的公开 URL，并替换 README 顶部的 `Live demo` 链接。
+
+部署前请确认仓库中包含：
+
+```text
+app.py
+requirements.txt
+data/processed/market_entry_dataset.csv
+data/processed/market_entry_dataset.json
+data/sample/sample_market_entry_dataset.csv
+demo.png
+```
 
 ---
 
