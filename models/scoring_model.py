@@ -17,9 +17,9 @@ class ScoringModel:
     def score(self, context: dict, risk_result: dict | None = None) -> dict:
         metrics = context["metrics"]
         market_demand = self._clamp(
-            metrics.get("industry_growth_rate", 0) * 10
+            metrics.get("industry_growth_rate", 0) * 5
             + metrics.get("review_volume", 0) / 1000
-            + metrics.get("average_rating", 0) * 8
+            + metrics.get("average_rating", 0) * 7
         )
         competition_intensity = self._clamp(100 - metrics.get("competition_level", 6) * 12)
         ecommerce_readiness = self._clamp(metrics.get("ecommerce_penetration", 0.55) * 100)
@@ -55,4 +55,3 @@ class ScoringModel:
     @staticmethod
     def _clamp(value: float, low: float = 0, high: float = 100) -> float:
         return max(low, min(high, float(value)))
-

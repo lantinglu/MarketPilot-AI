@@ -26,9 +26,10 @@ class RetrieverAgent:
         self.dataset["metric_name"] = self.dataset["metric_name"].fillna("").astype(str)
 
     def retrieve(self, task: dict) -> dict:
+        metric_records = self._metric_records(task)
         matches = self._filter_records(task)
         fallback_records = self._fallback_records(task)
-        combined = pd.concat([matches, fallback_records], ignore_index=True).drop_duplicates()
+        combined = pd.concat([metric_records, matches, fallback_records], ignore_index=True).drop_duplicates()
 
         metrics = self._extract_metrics(combined)
         missing_fields = self._missing_required_metrics(metrics)
@@ -40,7 +41,7 @@ class RetrieverAgent:
             "records": combined.to_dict(orient="records"),
             "source_context": source_context,
             "missing_fields": missing_fields,
-            "data_quality": self._data_quality(matches, missing_fields),
+            "data_quality": self._data_quality(metric_records, missing_fields),
         }
 
     def get_country_data(self, country: str) -> pd.DataFrame:
@@ -60,16 +61,22 @@ class RetrieverAgent:
         industry = self._contains("industry", task["industry"])
         product = self._contains("product", task["product"])
 
-        mask = (
-            self.dataset["country"].fillna("").str.lower().eq(task["country"].lower())
-            & self.dataset["industry"].fillna("").str.lower().eq(task["industry"].lower())
-            & self.dataset["product"].fillna("").str.lower().eq(task["product"].lower())
-        )
-        exact_combo = self.dataset[mask]
+        exact_combo = self._exact_combo(task, self.dataset)
         frames = [exact_combo, country, industry, product]
         if task.get("platform"):
             frames.append(self.get_platform_data(task["platform"]))
         return pd.concat(frames, ignore_index=True).drop_duplicates()
+
+    def _metric_records(self, task: dict) -> pd.DataFrame:
+        """Return model metrics in a deterministic priority order."""
+
+        exact = self._exact_combo(task, self.dataset)
+        if not exact.empty:
+            return exact
+        industry_benchmark = self._industry_benchmark(task, self.dataset)
+        if not industry_benchmark.empty:
+            return industry_benchmark
+        return self._fallback_records(task)
 
     def _fallback_records(self, task: dict) -> pd.DataFrame:
         """Use nearest sample rows if exact metrics are not available."""
@@ -78,13 +85,13 @@ class RetrieverAgent:
         if sample.empty:
             return sample
 
-        exact = sample[
-            sample["country"].fillna("").str.lower().eq(task["country"].lower())
-            & sample["industry"].fillna("").str.lower().eq(task["industry"].lower())
-            & sample["product"].fillna("").str.lower().eq(task["product"].lower())
-        ]
+        exact = self._exact_combo(task, sample)
         if not exact.empty:
             return exact
+
+        industry_benchmark = self._industry_benchmark(task, self.dataset)
+        if not industry_benchmark.empty:
+            return industry_benchmark
 
         country_fallback = sample[sample["country"].fillna("").str.lower().eq(task["country"].lower())]
         if not country_fallback.empty:
@@ -95,6 +102,34 @@ class RetrieverAgent:
             return industry_fallback
 
         return sample[sample["country"].fillna("").str.lower().eq("japan")]
+
+    @staticmethod
+    def _exact_combo(task: dict, dataset: pd.DataFrame) -> pd.DataFrame:
+        mask = (
+            dataset["country"].fillna("").str.lower().eq(task["country"].lower())
+            & dataset["industry"].fillna("").str.lower().eq(task["industry"].lower())
+            & dataset["product"].fillna("").str.lower().eq(task["product"].lower())
+        )
+        return dataset[mask]
+
+    @staticmethod
+    def _industry_benchmark(task: dict, dataset: pd.DataFrame) -> pd.DataFrame:
+        mask = (
+            dataset["country"].fillna("").str.lower().eq(task["country"].lower())
+            & dataset["industry"].fillna("").str.lower().eq(task["industry"].lower())
+            & dataset["source_type"].fillna("").isin(["benchmark_estimate", "sample_estimate"])
+        )
+        candidates = dataset[mask].copy()
+        if candidates.empty:
+            return candidates
+        products = sorted(item for item in candidates["product"].fillna("").unique() if item)
+        if not products:
+            return candidates
+        benchmark = candidates[candidates["product"].eq(products[0])].copy()
+        benchmark["notes"] = benchmark["notes"].fillna("").astype(str).map(
+            lambda note: f"{note} | Product input uses industry benchmark metrics."
+        )
+        return benchmark
 
     def _extract_metrics(self, records: pd.DataFrame) -> dict[str, Any]:
         metrics: dict[str, Any] = {}
@@ -160,7 +195,10 @@ class RetrieverAgent:
             return "partial_with_fallback"
         if matches.empty:
             return "fallback_only"
+        if (matches["notes"].fillna("").str.contains("Product input uses industry benchmark metrics", regex=False)).any():
+            return "industry_benchmark"
         if (matches["source_type"].fillna("") == "platform_data_source").any():
             return "excel_enriched"
+        if (matches["source_type"].fillna("") == "benchmark_estimate").any():
+            return "benchmark_estimate"
         return "sample_complete"
-

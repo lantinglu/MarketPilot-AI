@@ -18,3 +18,11 @@ def test_retriever_handles_unknown_input_gracefully():
     assert isinstance(context["missing_fields"], list)
     assert context["metrics"]["population"] > 0
 
+
+def test_planner_normalizes_country_aliases_and_codes():
+    planner = PlannerAgent()
+
+    assert planner.plan("USA", "Beauty", "Sunscreen")["country"] == "United States"
+    assert planner.plan("United States of America", "Beauty", "Sunscreen")["country"] == "United States"
+    assert planner.plan("DEU", "Consumer Electronics", "Wireless Earbuds")["country"] == "Germany"
+    assert planner.plan("jp", "Home & Kitchen", "Vacuum Flask")["country"] == "Japan"

@@ -48,10 +48,10 @@ def run_market_entry_analysis(country: str, industry: str, product: str, platfor
 
 def _recommendation(total_score: float, risk_level: str) -> str:
     if total_score >= 72 and risk_level != "High":
-        return "Enter market with a focused pilot launch"
+        return "Enter market with a focused pilot launch / 建议以聚焦型试点进入市场"
     if total_score >= 55:
-        return "Enter cautiously after validation tests"
-    return "Do not enter yet; improve positioning, pricing, or data confidence first"
+        return "Enter cautiously after validation tests / 建议在完成验证测试后谨慎进入"
+    return "Do not enter yet; improve positioning, pricing, or data confidence first / 暂不建议进入，先优化定位、价格或数据可信度"
 
 
 if __name__ == "__main__":
@@ -71,4 +71,3 @@ if __name__ == "__main__":
     print(f"Recommendation: {result['recommendation']}")
     print(f"Data Quality: {result['context']['data_quality']}")
     print(f"Report generated: {result['report_path']}")
-
