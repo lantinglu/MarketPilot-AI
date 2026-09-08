@@ -10,7 +10,7 @@ An AI-powered multi-agent system that helps cross-border sellers evaluate whethe
 
 ### Live Demo
 
-Live demo: **Coming soon after Streamlit Cloud deployment**
+Live demo: [MarketPilot AI](https://marketpilot-ai-agent.streamlit.app/)
 
 ![Market Entry Agent Demo](demo.png)
 
@@ -230,7 +230,6 @@ market-entry-agent/
 - add historical report storage
 - replace some rule-based formulas with trained ML models
 - add an LLM analyst layer for richer narrative reasoning
-- deploy the Streamlit app as a public demo website
 
 ### Disclaimer
 
@@ -246,13 +245,7 @@ This project is a portfolio-ready AI Agent demo. Some records are benchmark esti
 
 ### 在线演示 / Live Demo
 
-Live demo: **Coming soon after Streamlit Cloud deployment**
-
-部署完成后可将上面替换为：
-
-```markdown
-Live demo: [Market Entry Agent](https://your-app-name.streamlit.app)
-```
+Live demo: [MarketPilot AI](https://marketpilot-ai-agent.streamlit.app/)
 
 ##### Demo Preview / 演示截图
 
@@ -274,47 +267,11 @@ http://localhost:8501
 
 Demo 网站支持：
 
-- 快速演示场景
 - 目标国家和行业选择
 - 产品自由输入
 - 平台推荐
 - 中英双语市场进入报告生成
 - Markdown 报告下载
-
-##### Deploy as a Public Live Demo / 部署为公开演示网站
-
-推荐使用 **Streamlit Community Cloud** 部署本项目。部署后，你会得到一个类似下面这样的公开链接：
-
-```text
-https://your-app-name.streamlit.app
-```
-
-部署步骤：
-
-1. 将项目 push 到 GitHub。
-2. 打开 [Streamlit Community Cloud](https://share.streamlit.io/)。
-3. 使用 GitHub 登录。
-4. 点击 `New app`。
-5. 选择该项目仓库。
-6. `Main file path` 填写：
-
-```text
-app.py
-```
-
-7. 点击 `Deploy`。
-8. 复制生成的公开 URL，并替换 README 顶部的 `Live demo` 链接。
-
-部署前请确认仓库中包含：
-
-```text
-app.py
-requirements.txt
-data/processed/market_entry_dataset.csv
-data/processed/market_entry_dataset.json
-data/sample/sample_market_entry_dataset.csv
-demo.png
-```
 
 ### 项目速览 / Project Snapshot
 
@@ -480,13 +437,7 @@ pip install -r requirements.txt
 python data_processing/build_dataset.py
 ```
 
-如果 Windows 上 `python` 命令不可用，可以使用 Anaconda Python：
-
-```bash
-D:\Anaconda\anaconda3\python.exe data_processing\build_dataset.py
-```
-
-运行命令行版本：
+如果 Windows 上 `python` 命令不可用，可以使用 Anaconda Python。
 
 ```bash
 python main.py
@@ -533,18 +484,6 @@ market-entry-agent/
 ├── config.py
 └── requirements.txt
 ```
-
-### 10. 未来改进方向
-
-- 接入 Amazon、Rakuten、Walmart、Shopee、Lazada、eBay 等平台 API
-- 增加 Google Trends 和社交媒体趋势信号
-- 接入 World Bank、IMF、OECD 和各国统计局数据
-- 增加 PDF 导出
-- 支持多个国家/行业/产品方案对比
-- 增加历史报告存储
-- 将部分规则模型升级为机器学习模型
-- 增加 LLM 分析师层，用于更丰富的商业解读
-- 部署为可公开访问的 Streamlit demo 网站
 
 ### 数据说明
 
