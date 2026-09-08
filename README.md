@@ -166,11 +166,7 @@ Build the processed dataset:
 python data_processing/build_dataset.py
 ```
 
-If the `python` command is unavailable on Windows, use the Anaconda interpreter:
-
-```bash
-D:\Anaconda\anaconda3\python.exe data_processing\build_dataset.py
-```
+If the `python` command is unavailable on Windows, use the Anaconda interpreter.
 
 Run the command-line demo:
 
@@ -219,17 +215,6 @@ market-entry-agent/
 ├── config.py
 └── requirements.txt
 ```
-
-### 10. Future Improvements
-
-- integrate live marketplace APIs such as Amazon, Rakuten, Walmart, Shopee, Lazada, and eBay
-- add Google Trends and social media listening signals
-- connect World Bank, IMF, OECD, and national statistics APIs
-- add PDF export
-- support multi-scenario comparison
-- add historical report storage
-- replace some rule-based formulas with trained ML models
-- add an LLM analyst layer for richer narrative reasoning
 
 ### Disclaimer
 
